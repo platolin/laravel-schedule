@@ -52,7 +52,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Taipei',
 
     /*
     |--------------------------------------------------------------------------
@@ -156,6 +156,9 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        //
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
 
     ],
 
@@ -204,6 +207,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'EntityManager' => LaravelDoctrine\ORM\Facades\EntityManager::class,
         //'Sybase' => Uepg\LaravelSybase\Database\SybaseServiceProvider::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
 
     ],
 

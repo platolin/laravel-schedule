@@ -2,6 +2,9 @@
 
 namespace App\Console\Commands;
 
+use DB;
+use App\relmek\Db\sybase;
+use App\relmek\Db\sybase\mis;
 use Illuminate\Console\Command;
 use File;
 
@@ -22,9 +25,10 @@ class Sybasetest extends Command
     // Console 執行的程式
     public function handle()
     {
-        //
-        //$results = \DB::select("select * from secuser  ");
-        $results = \DB::select("select address from invwh where wareh ='C001' ");
+        //:select('select * from users where active = ?', [1]);
+        $results = DB::connection('sybase')->select('select * from invwh where wareh = ? ',['C001']);
+        //$results = mis::where('facno' , 'SBM' ) ->get();
+        //dd($results);
         // 檔案紀錄在 storage/test.log
         $log_file_path = storage_path('test.log');
         var_dump(@iconv("BIG5","UTF-8//IGNORE",$results[0]->address) );

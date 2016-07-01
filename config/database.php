@@ -26,7 +26,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'sybase'),
+    'default' => env('DB_CONNECTION', 'mysql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -62,7 +62,7 @@ return [
 
         'sybase' => [
             'driver' => 'sqlsrv',
-            'host' => env('SYBASE_HOST', '192.168.1.198'),
+            'host' => env('SYBASE_HOST', '192.168.1.199'),
             'port' => env('SYBASE_PORT', '5000'),
             'database' => env('SYBASE_DATABASE', 'vproerp'),
             'username' => env('SYBASE_USERNAME', 'vproerp'),

@@ -55,7 +55,7 @@ return [
     |
     */
 
-    'from' => ['address' => 'test_relmek@relmek.com.tw', 'name' => 'test_relmek'],
+    'from' => ['address' => 'admin@relmek.com.tw', 'name' => 'admin'],
 
     /*
     |--------------------------------------------------------------------------

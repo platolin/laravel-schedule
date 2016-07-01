@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\Inspire::class,
         \App\Console\Commands\TestLog::class,
         \App\Console\Commands\Sybasetest::class,
+        \App\Console\Commands\SybaseToExcel::class,
     ];
 
     /**
@@ -27,17 +28,11 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
 
-        $schedule->call(function () {
-            DB::table('recent_users')->delete();
-        })->daily();
-
-        $schedule->command('cache:clear')
-            ->Daily()
-            ->sendOutputTo('/var2/www/html/laravel-Schedules/storage/logs')
-            ->emailOutputTo('plato@relmek.com.tw');
-
         // 每分鐘執行 Artisan 命令 test:Log
         //$schedule->command('test:Log')->everyMinute();
+        $schedule->command('Sybase:excel emmi-dent')->monthlyOn(2, '07:00');
+
+        $schedule->command('Sybase:excel cdrhmas')->monthlyOn(2, '07:01');
 
     }
 }
