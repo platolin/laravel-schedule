@@ -77,8 +77,8 @@ class SybaseToExcel  extends Command
         {
             $message->attach(storage_path().'/exports/emmident.xls');
             $message->attach(storage_path().'/exports/emmident2.xls');
-            $message->to('plato@relmek.com.tw', 'plato lin')->subject('ERP Emmi-dent 資料');
-            $message->to('plato@sebamed.com.tw', 'plato lin')->subject('ERP Emmi-dent 資料');
+            $message->to('jentang@relmek.com.tw', 'jentang')->subject('ERP Emmi-dent 資料');
+            $message->to('plato@relmek.com.tw', 'plato')->subject('ERP Emmi-dent 資料');
         });
     }
 
@@ -105,8 +105,9 @@ class SybaseToExcel  extends Command
         Mail::raw('ERP 訂單資料', function ($message)
         {
             $message->attach(storage_path().'/exports/cdrhmas.xls');
-            $message->to('plato@relmek.com.tw', 'plato lin')->subject('ERP 訂單資料');
-            $message->to('plato@sebamed.com.tw', 'plato lin')->subject('ERP 訂單資料');
+            $message->to('viola@relmek.com.tw', 'viola')->subject('ERP 訂單資料');
+            $message->to('plato@relmek.com.tw', 'plato')->subject('ERP 訂單資料');
+
         });
     }
 }

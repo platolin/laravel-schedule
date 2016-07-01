@@ -30,9 +30,9 @@ class Kernel extends ConsoleKernel
 
         // 每分鐘執行 Artisan 命令 test:Log
         //$schedule->command('test:Log')->everyMinute();
-        $schedule->command('Sybase:excel emmi-dent')->monthlyOn(2, '07:00');
+        $schedule->command('Sybase:excel emmi-dent')->monthlyOn(1, '15:50');
 
-        $schedule->command('Sybase:excel cdrhmas')->monthlyOn(2, '07:01');
+        $schedule->command('Sybase:excel cdrhmas')->monthlyOn(1, '15:51');
 
     }
 }
