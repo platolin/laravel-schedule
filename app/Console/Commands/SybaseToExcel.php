@@ -86,8 +86,9 @@ class SybaseToExcel  extends Command
     {
         $start_date = (new Carbon('first day of last month'))->toDateString();
         $end_date   = (new Carbon('first day of this month'))->toDateString();
-        $cdrhmas = DB::connection('sybase')->select('select substring(cuspono,1,1)as cp_EIP , * from cdrhmas where recdate >= ? and recdate < ?  ',[$start_date , $end_date]);
-        //$cdrhmas = DB::select('select  * from cdrhmas where recdate >= ? and recdate < ?  ',[$start_date , $end_date]);
+        $cdrhmas = DB::connection('sybase')
+            ->select('select substring(cuspono,1,1)as cp_EIP , cdrno,depno,mancode,cuycode,hresta,cusno,totamts,hmark1 from cdrhmas where recdate >= ? and recdate < ?  '
+                ,[$start_date , $end_date]);
         Excel::create('cdrhmas', function($excel) use($cdrhmas) {
 
             $excel->sheet('Sheet1', function($sheet) use($cdrhmas){
