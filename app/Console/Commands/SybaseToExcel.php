@@ -13,7 +13,6 @@ use Mail;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Console\Command;
-use PhpParser\Node\Stmt\Switch_;
 
 
 class SybaseToExcel  extends Command
@@ -38,6 +37,9 @@ class SybaseToExcel  extends Command
                 break;
             case 'emmi-dent':
                 $this->ConverFromEmmident();
+                break;
+            case 'test':
+                $this->ConverFromTest();
                 break;
         }
     }
@@ -81,7 +83,32 @@ class SybaseToExcel  extends Command
             $message->to('plato@relmek.com.tw', 'plato')->subject('ERP Emmi-dent 資料');
         });
     }
+    public function ConverFromTest()
+    {
+        $start_date = (new Carbon('yesterday'))->toDateString();
+        $end_date   = (new Carbon('today'))->toDateString();
+        $emmident = DB::connection('sybase')->select("select shpdate,shpno,hmark1,depno,mancode,totamts,mark from cdrhad where shpdate >= ? and shpdate < ? and houtsta ='Y' ",[$start_date , $end_date]);
 
+
+        Excel::create('sybasetest', function($excel) use($emmident) {
+            $excel->sheet('Sheet1', function($sheet) use($emmident){
+
+                $emmi_array= array();
+                foreach ($emmident as $emmident_detial)
+                {
+                    $emmi_array[] = get_object_vars($emmident_detial);
+                }
+                $sheet->fromArray($emmi_array);
+            });
+
+        })->store('xls');
+
+        Mail::raw('Test 資料', function ($message)
+        {
+            $message->attach(storage_path().'/exports/sybasetest.xls');
+            $message->to('plato@relmek.com.tw', 'plato')->subject('ERP test 資料');
+        });
+    }
     public function ConverFromCdrhmas()
     {
         $start_date = (new Carbon('first day of last month'))->toDateString();
