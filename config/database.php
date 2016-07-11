@@ -71,6 +71,17 @@ return [
             'prefix' => '',
             'schema' => 'public',
         ],
+        'sybase-bi' => [
+            'driver' => 'sqlsrv',
+            'host' => env('SYBASE_BI_HOST', '192.168.1.199'),
+            'port' => env('SYBASE_BI_PORT', '5000'),
+            'database' => env('SYBASE_BI_DATABASE', 'bi'),
+            'username' => env('SYBASE_BI_USERNAME', 'bi'),
+            'password' => env('SYBASE_BI_PASSWORD', 'mis123'),
+            'charset' => 'LATIN1',
+            'prefix' => '',
+            'schema' => 'public',
+        ],
 
     ],
 
