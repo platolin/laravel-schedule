@@ -31,12 +31,13 @@ class Kernel extends ConsoleKernel
 
         // 每分鐘執行 Artisan 命令 test:Log
         //$schedule->command('test:Log')->everyMinute();->dailyAt('13:00');
+        //Daily
         $schedule->command('Sybase:excel test')->dailyAt('18:00');
+        $schedule->command('Sybase:mysql cdrcus_del')->dailyAt('23:00');
 
+        //monthly 
         $schedule->command('Sybase:excel emmi-dent')->monthlyOn(1, '07:00');
-
         $schedule->command('Sybase:excel cdrhmas')->monthlyOn(1, '07:05');
-
-        $schedule->command('Sybase:mysql otc_eis_cdrsal')->monthlyOn(1, '06:00');
+        $schedule->command('Sybase:mysql otc_eis_cdrsal')->monthlyOn(1, '06:00'); 
     }
 }

@@ -55,14 +55,32 @@ class SybaseToMysql extends Command
             case 'otc_eis_cdrsal':
                 $this->TransformToOtcEisCdrsal();
                 break;
-            case 'otc_eis_cdrsalm':
-                $this->TransformToOtcEisCdrsalm();
+            case 'cdrcus_del':
+                $this->TransformTocdrcus_del();
                 break;
             case 'test':
                 $this->TransformTest();
                 break;
         }
     }
+    /**
+     * Execute the console command.
+     * syabse delete cdrcus => mysql delete cdrcus & cdrcus 
+     * @return 
+     */
+    public function TransformTocdrcus_del()
+    {
+        $cdrcus_del = DB::connection('sybase')->select("select cusno,kind,indate,cussta,status from cdrcus_del where status ='N' ");
+        //dd($cdrcus_del);
+        foreach ($cdrcus_del as $cdrcus_del_detial)
+                {                    
+                    DB::delete("delete from cdrscus where cusno = ? ", [$cdrcus_del_detial->cusno]);
+                    DB::delete("delete from cdrcus where cusno = ? ", [$cdrcus_del_detial->cusno]);
+                    DB::connection('sybase')->update("update cdrcus_del set status = ? where cusno = ? and kind = ? and indate = ? ",['D',$cdrcus_del_detial->cusno,$cdrcus_del_detial->kind,$cdrcus_del_detial->indate]);
+                }
+
+    }
+
     public function TransformToOtcEisCdrsal()
     {
         $trans_count = 0 ;
@@ -102,7 +120,7 @@ class SybaseToMysql extends Command
                 $value['spdsc'] = addslashes(@iconv("BIG5","UTF-8//IGNORE", $value['spdsc'])) ;
                 $it =  new RecursiveIteratorIterator(new RecursiveArrayIterator($value));
                 $insert_value = iterator_to_array($it, false);            
-                $sql_insert  =  "insert into eis_cdrsal_ot ( shpdate,   cusno,   cusna_utf8,   mancode,   shpno,   wareh,   trseq,   itcls,   itnbr,   itdsc_utf8,   spdsc_utf8,   shpqy1,   shpamts,   yymm,   iocode,   depno,   cuskindd,   fdepno)";
+                $sql_insert  =  "insert into eis_cdrsalm_ot ( shpdate,   cusno,   cusna_utf8,   mancode,   shpno,   wareh,   trseq,   itcls,   itnbr,   itdsc_utf8,   spdsc_utf8,   shpqy1,   shpamts,   yymm,   iocode,   depno,   cuskindd,   fdepno)";
                 $sql_insert  .= " value ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
                 DB::insert($sql_insert, $insert_value);
                 $trans_count ++ ;
