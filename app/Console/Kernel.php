@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\Sybasetest::class,
         \App\Console\Commands\SybaseToExcel::class,
         \App\Console\Commands\SybaseToMysql::class,
+        \App\Console\Commands\SybaseToBi::class,
     ];
 
     /**
@@ -39,5 +40,6 @@ class Kernel extends ConsoleKernel
         $schedule->command('Sybase:excel emmi-dent')->monthlyOn(1, '07:00');
         $schedule->command('Sybase:excel cdrhmas')->monthlyOn(1, '07:05');
         $schedule->command('Sybase:mysql otc_eis_cdrsal')->monthlyOn(1, '06:00'); 
+        $schedule->command('Sybase:BI eis_cdrsalmnew ')->monthlyOn(1, '06:10');
     }
 }
