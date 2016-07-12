@@ -35,11 +35,13 @@ class Kernel extends ConsoleKernel
         //Daily
         $schedule->command('Sybase:excel test')->dailyAt('18:00');
         $schedule->command('Sybase:mysql cdrcus_del')->dailyAt('23:00');
+        $schedule->command('Sybase:mysql cdr_hosp')->dailyAt('21:00');
 
         //monthly 
         $schedule->command('Sybase:excel emmi-dent')->monthlyOn(1, '07:00');
         $schedule->command('Sybase:excel cdrhmas')->monthlyOn(1, '07:05');
         $schedule->command('Sybase:mysql otc_eis_cdrsal')->monthlyOn(1, '06:00'); 
         $schedule->command('Sybase:BI eis_cdrsalmnew ')->monthlyOn(1, '06:10');
+
     }
 }

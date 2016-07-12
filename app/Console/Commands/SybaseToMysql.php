@@ -33,6 +33,7 @@ class SybaseToMysql extends Command
     protected $eMail ;
     protected $start_date;
     protected $end_date;
+    protected $today ;
 
     public function __construct( Mail $mail)
     {
@@ -40,6 +41,8 @@ class SybaseToMysql extends Command
         $this->eMail = $mail;
         // $this->start_date = (new Carbon('first day of this month'))->toDateString();
         // $this->end_date   = (new Carbon('first day of next month'))->toDateString();
+        //$this->today = (new Carbon('first day of last month'))->toDateString();
+        $this->today = (new Carbon('today'))->toDateString();
         $this->start_date = (new Carbon('first day of last month'))->toDateString();
         $this->end_date   = (new Carbon('first day of this month'))->toDateString();
     }
@@ -58,9 +61,44 @@ class SybaseToMysql extends Command
             case 'cdrcus_del':
                 $this->TransformTocdrcus_del();
                 break;
+            case 'cdr_hosp':
+                $this->TransformTocdr_hosp();
+                break;
             case 'test':
                 $this->TransformTest();
                 break;
+        }
+    }
+
+    public function TransformTocdr_hosp()
+    {        
+        $cdr_hosp = DB::connection('sybase')->select("select hos_no,hospname,addr,mancode,areacode,indate,cuskind from cdr_hosp where indate >= ? ",[$this->today]);   
+
+        foreach($cdr_hosp as $key => $data){
+            //dd($data);
+                $value = array();
+                $value['hos_no'] = $data->hos_no;                
+                $value['hospname_utf8'] = addslashes(@iconv("BIG5","UTF-8//IGNORE", $data->hospname)) ;
+                $value['addr_utf8'] = addslashes(@iconv("BIG5","UTF-8//IGNORE", $data->addr)) ;
+                $value['mancode'] = $data->mancode;
+                $value['areacode'] = $data->areacode;
+                $value['cuskind'] = $data->cuskind;
+                $value['indate'] = (new Carbon($data->indate))->format('Y-m-d');
+                $cdr_telcode = DB::select('select * from cdr_telcode where mancode = ? ', [$data->mancode]);
+                //dd($cdr_telcode);
+                if($cdr_telcode){
+                    $value['pdepno'] = $cdr_telcode[0]->pdepno;
+                    $value['telcode'] = $cdr_telcode[0]->telcode;    
+                }else{
+                    $value['pdepno'] = 'ZZ';
+                    $value['telcode'] = '9';
+                }                
+                DB::delete('delete from cdr_hosp where hos_no = ?' , [$data->hos_no]);
+                $it =  new RecursiveIteratorIterator(new RecursiveArrayIterator($value));
+                $insert_value = iterator_to_array($it, false);            
+                $sql_insert  =  "insert into cdr_hosp ( hos_no,hospname_utf8,addr_utf8,mancode,areacode,cuskind,indate,pdepno,telcode)";
+                $sql_insert  .= " value ( ?,?,?,?,?,?,?,?,? )";
+                DB::insert($sql_insert, $insert_value);     
         }
     }
     /**
