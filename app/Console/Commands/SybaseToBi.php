@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use DB;
+use Log;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -41,10 +42,7 @@ class SybaseToBi extends Command
     {
         Switch ($this->argument('type')){
             case 'eis_cdrsalmnew':
-                $this->Convereis_cdrsalmnew();
-                break;
-            case 'emmi-dent':
-                $this->ConverFromEmmident();
+                $this->ConverEis_cdrsalmnew();
                 break;
             case 'test':
                 $this->ConverFromTest();
@@ -52,10 +50,11 @@ class SybaseToBi extends Command
         }
     }
 
-    protected function Convereis_cdrsalmnew()
+    protected function ConverEis_cdrsalmnew()
     {
         $start_date = (new Carbon('first day of last month'))->toDateString();
         $end_date   = (new Carbon('first day of this month'))->toDateString();
         DB::connection('sybase-bi')->statement('update_eis_cdrsalmnew ? , ? ', [$start_date , $end_date ]);        
+        Log::info('Sybase to BI exec update_eis_cdrsalmnew '); 
     }
 }

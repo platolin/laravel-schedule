@@ -89,7 +89,6 @@ class SybaseToExcel  extends Command
         $end_date   = (new Carbon('today'))->toDateString();
         $emmident = DB::connection('sybase')->select("select shpdate,shpno,hmark1,depno,mancode,totamts,mark from cdrhad where shpdate >= ? and shpdate < ? and houtsta ='Y' ",[$start_date , $end_date]);
 
-
         Excel::create('sybasetest', function($excel) use($emmident) {
             $excel->sheet('Sheet1', function($sheet) use($emmident){
 

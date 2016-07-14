@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use DB;
 use Mail;
+use Log;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use \RecursiveIteratorIterator;
@@ -42,7 +43,7 @@ class SybaseToMysql extends Command
         // $this->start_date = (new Carbon('first day of this month'))->toDateString();
         // $this->end_date   = (new Carbon('first day of next month'))->toDateString();
         //$this->today = (new Carbon('first day of last month'))->toDateString();
-        $this->today = (new Carbon('today'))->toDateString();
+        $this->today = (new Carbon('today'))->toDateString();        
         $this->start_date = (new Carbon('first day of last month'))->toDateString();
         $this->end_date   = (new Carbon('first day of this month'))->toDateString();
     }
@@ -73,7 +74,7 @@ class SybaseToMysql extends Command
     public function TransformTocdr_hosp()
     {        
         $cdr_hosp = DB::connection('sybase')->select("select hos_no,hospname,addr,mancode,areacode,indate,cuskind from cdr_hosp where indate >= ? ",[$this->today]);   
-
+        $insert_count = 0 ;
         foreach($cdr_hosp as $key => $data){
             //dd($data);
                 $value = array();
@@ -99,6 +100,11 @@ class SybaseToMysql extends Command
                 $sql_insert  =  "insert into cdr_hosp ( hos_no,hospname_utf8,addr_utf8,mancode,areacode,cuskind,indate,pdepno,telcode)";
                 $sql_insert  .= " value ( ?,?,?,?,?,?,?,?,? )";
                 DB::insert($sql_insert, $insert_value);     
+                $insert_count ++;
+        }
+        if($insert_count > 0 )
+        {
+            Log::info('Sybase to Mysql insert cdr_hosp ',['total insert :', $insert_count ]); 
         }
     }
     /**
@@ -110,13 +116,18 @@ class SybaseToMysql extends Command
     {
         $cdrcus_del = DB::connection('sybase')->select("select cusno,kind,indate,cussta,status from cdrcus_del where status ='N' ");
         //dd($cdrcus_del);
+        $del_count = 0;
         foreach ($cdrcus_del as $cdrcus_del_detial)
                 {                    
                     DB::delete("delete from cdrscus where cusno = ? ", [$cdrcus_del_detial->cusno]);
                     DB::delete("delete from cdrcus where cusno = ? ", [$cdrcus_del_detial->cusno]);
                     DB::connection('sybase')->update("update cdrcus_del set status = ? where cusno = ? and kind = ? and indate = ? ",['D',$cdrcus_del_detial->cusno,$cdrcus_del_detial->kind,$cdrcus_del_detial->indate]);
+                    $del_count ++;
                 }
-
+        if($del_count > 0 )              
+        {
+            Log::info('Sybase to Mysql del cdrcus & cdrscu ',['total del :', $del_count ]); 
+        }
     }
 
     public function TransformToOtcEisCdrsal()
@@ -169,11 +180,9 @@ class SybaseToMysql extends Command
             $message->to('plato@relmek.com.tw', 'plato')->subject('Sybase transform to Mysql : eis_cdrsal_ot');
         });
     }
+
     public function TransformTest()
-    {        
-        
-        DB::delete("delete from eis_cdrsal_ot where shpdate >=? and shpdate < ? ", [$this->start_date , $this->end_date]);
-        DB::delete("delete from eis_cdrsalm_ot where shpdate >=? and shpdate < ? ", [$this->start_date , $this->end_date]);
-        
+    {                       
+               Log::info('Sybase to Mysql test',['abc', 123 ]); 
     }
 }
