@@ -106,6 +106,8 @@ class SybaseToMysql extends Command
         {
             Log::info('Sybase to Mysql insert cdr_hosp ',['total insert :', $insert_count ]); 
         }
+
+        $this->info('cdr_hosp->ok');
     }
     /**
      * Execute the console command.
@@ -128,6 +130,7 @@ class SybaseToMysql extends Command
         {
             Log::info('Sybase to Mysql del cdrcus & cdrscu ',['total del :', $del_count ]); 
         }
+        $this->info('cdrcus_del->ok');
     }
 
     public function TransformToOtcEisCdrsal()
@@ -179,10 +182,12 @@ class SybaseToMysql extends Command
         {                
             $message->to('plato@relmek.com.tw', 'plato')->subject('Sybase transform to Mysql : eis_cdrsal_ot');
         });
+        $this->info('otc_eis_cdrsal->ok');
     }
 
     public function TransformTest()
-    {                       
+    {                                   
                Log::info('Sybase to Mysql test',['abc', 123 ]); 
+               $this->info('test->ok');
     }
 }

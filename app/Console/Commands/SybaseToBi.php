@@ -56,5 +56,6 @@ class SybaseToBi extends Command
         $end_date   = (new Carbon('first day of this month'))->toDateString();
         DB::connection('sybase-bi')->statement('update_eis_cdrsalmnew ? , ? ', [$start_date , $end_date ]);        
         Log::info('Sybase to BI exec update_eis_cdrsalmnew '); 
+        $this->info('eis_cdrsalmnew => exec ');
     }
 }
