@@ -31,6 +31,9 @@
     "autoload-dev": {
         "classmap": [
             "tests/TestCase.php"
+        ],
+        "files":[
+            "tests/MailTracking.php"
         ]
     },
     "scripts": {

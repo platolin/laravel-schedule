@@ -78,7 +78,7 @@ class SybaseToMysql extends Command
         foreach($cdr_hosp as $key => $data){
             //dd($data);
                 $value = array();
-                $value['hos_no'] = $data->hos_no;                
+                $value['hos_no'] = $data->hos_no; 
                 $value['hospname_utf8'] = addslashes(@iconv("BIG5","UTF-8//IGNORE", $data->hospname)) ;
                 $value['addr_utf8'] = addslashes(@iconv("BIG5","UTF-8//IGNORE", $data->addr)) ;
                 $value['mancode'] = $data->mancode;

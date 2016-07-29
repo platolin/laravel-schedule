@@ -38,11 +38,42 @@ class SybaseToExcel  extends Command
             case 'emmi-dent':
                 $this->ConverFromEmmident();
                 break;
+            case 'eis_data':
+                $this->ConverFromEis_data();
+                break;
             case 'test':
                 $this->ConverFromTest();
                 break;
         }
     }
+
+    public function ConverFromEis_data()
+    {
+        $start_date = (new Carbon('first day of last month'))->toDateString();
+        $end_date   = (new Carbon('first day of this month'))->toDateString();
+        $eis_data = DB::connection('sybase')->select("select sum(shpamt+bakamt) as amt , sum(qty+bakqty) as qty ,yymm, fdepno, itnbr ,itdsc,spdsc from bi..eis_cdrsal where shpdate >= ? and shpdate <  ? and   itcls ='S' and shpno not like 'A%' group by yymm, fdepno, itnbr ,itdsc,spdsc ",[$start_date , $end_date]);
+           
+        Excel::create('eis_data', function($excel) use($eis_data) {
+            $excel->sheet('Sheet1', function($sheet) use($eis_data){
+                $eis_array= array();
+                foreach ($eis_data as $eis_detail)
+                {
+                    $eis_detail->itdsc = addslashes(@iconv("BIG5","UTF-8//IGNORE", $eis_detail->itdsc)) ;
+                    $eis_detail->spdsc = addslashes(@iconv("BIG5","UTF-8//IGNORE", $eis_detail->spdsc)) ;
+                    $eis_array[] = get_object_vars($eis_detail);                
+                }
+                $sheet->fromArray($eis_array, null, 'A1', false);
+            });
+        })->store('csv');
+        Mail::raw('eis_data 資料', function ($message)
+        {
+            $message->attach(storage_path().'/exports/eis_data.csv');            
+            $message->to('jentang@relmek.com.tw', 'jentang')->subject('ERP Emmi-dent 資料');
+            $message->to('plato@relmek.com.tw', 'plato')->subject('Monthly eis data');
+        });
+        $this->info('eis_data->ok')   ;
+    }
+
     public function ConverFromEmmident()
     {
         $start_date = (new Carbon('first day of last month'))->toDateString();
@@ -61,7 +92,7 @@ class SybaseToExcel  extends Command
                 $sheet->fromArray($emmi_array);
             });
 
-        })->store('xls');
+        })->store('csv');
         Excel::create('emmident2', function($excel) use($emmident2) {
             $excel->sheet('Sheet1', function($sheet) use($emmident2){
 
@@ -73,16 +104,17 @@ class SybaseToExcel  extends Command
                 $sheet->fromArray($emmi_array);
             });
 
-        })->store('xls');
+        })->store('csv');
 
         Mail::raw('Emmi-dent 資料', function ($message)
         {
-            $message->attach(storage_path().'/exports/emmident.xls');
-            $message->attach(storage_path().'/exports/emmident2.xls');
+            $message->attach(storage_path().'/exports/emmident.csv');
+            $message->attach(storage_path().'/exports/emmident2.csv');
             $message->to('jentang@relmek.com.tw', 'jentang')->subject('ERP Emmi-dent 資料');
             $message->to('plato@relmek.com.tw', 'plato')->subject('ERP Emmi-dent 資料');
         });
     }
+
     public function ConverFromTest()
     {
         $start_date = (new Carbon('yesterday'))->toDateString();
