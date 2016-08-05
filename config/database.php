@@ -82,6 +82,17 @@ return [
             'prefix' => '',
             'schema' => 'public',
         ],
+        'pos-sql' => [
+            'driver' => 'sqlsrv',
+            'host' => env('SQLSRV_HOST', ''),
+            'port' => env('SQLSRV_PORT', ''),
+            'database' => env('SQLSRV_DATABASE', ''),
+            'username' => env('SQLSRV_USERNAME', ''),
+            'password' => env('SQLSRV_PASSWORD', ''),
+            'charset' => 'UTF-8',
+            'prefix' => '',
+            'schema' => 'public',
+        ],
 
     ],
 
