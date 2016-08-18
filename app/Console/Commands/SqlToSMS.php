@@ -35,7 +35,7 @@ class SqlToSMS extends Command
     public function __construct()
     {
         parent::__construct();
-        $config= parse_ini_file("twsms.ini",true) ;         
+        $config= parse_ini_file( base_path()."/twsms.ini",true) ;         
         $this->username = $config['twsms']['username'];
         $this->password = $config['twsms']['password'];
         $this->sendtime = $config['twsms']['sendtime'];
