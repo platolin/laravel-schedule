@@ -21,6 +21,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\SybaseToBi::class,
         \App\Console\Commands\SqlToEmail::class,
         \App\Console\Commands\SqlToSMS::class,
+        \App\Console\Commands\RelmekMonthly::class,
     ];
 
     /**

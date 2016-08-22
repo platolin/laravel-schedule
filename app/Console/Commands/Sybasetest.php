@@ -101,12 +101,10 @@ class Sybasetest extends Command
         $this->info('Sybase ->ok total : ' . $count  ) ;
         // 檔案紀錄在 storage/test.log
         $log_file_path = storage_path('sybase_eis.log');
-
         // 記錄當時的時間
         $log_info = [
             'date'=>date('Y-m-d H:i:s')
         ];
-
         // 記錄 JSON 字串
         $log_info_json = json_encode($log_info) . "\r\n";
 
