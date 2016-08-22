@@ -2,6 +2,7 @@
 
 namespace App\Console;
 use DB;
+use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -46,6 +47,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('Sybase:excel eis_data')->monthlyOn(2, '07:00');
         $schedule->command('Sybase:mysql otc_eis_cdrsal')->monthlyOn(2, '06:00'); 
         $schedule->command('Sybase:BI eis_cdrsalmnew ')->monthlyOn(2, '06:10');
-
+        //
+        $yymm = (Carbon::now())->subMonths(1)->format('Ym');
+        $schedule->command("Relmek:Monthly 'Mysql' 'dailyreport' '$yymm' ")->monthlyOn(1,'01:00');
     }
 }
