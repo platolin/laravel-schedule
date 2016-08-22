@@ -44,8 +44,10 @@ class RelmekMonthly extends Command
     public function handle()
     {
         $this->yymm = $this->argument('yymm');
-        $this->start_26 = (Carbon::createFromDate(substr($this->yymm, 0,4),substr($this->yymm, 5,2) , 1))->subMonths(1)->day(26)->toDateString();
-        $this->end_25 = (Carbon::createFromDate(substr($this->yymm, 0,4),substr($this->yymm, 5,2) , 1))->day(25)->toDateString();
+        $date1 = Carbon::createFromDate(substr($this->yymm, 0,4),substr($this->yymm, 5,2) , 26);
+        $date2 = Carbon::createFromDate(substr($this->yymm, 0,4),substr($this->yymm, 5,2) , 25);
+        $this->start_26 = $date1->subMonths(1)->toDateString();
+        $this->end_25 = $date2->toDateString();
 
         Switch ($this->argument('tablename')){
             case 'dailyreport':
