@@ -68,7 +68,7 @@ class RelmekMonthly extends Command
             if( $payin::where('trdate',$value->enterdate )->where('userno',$value->mancode)->exists() )
             {
                 $payin::where('userno', $value->mancode)
-                ->where('trdate', $value->enterdat)
+                ->where('trdate', $value->enterdate)
                 ->update(['otrtime' => $otrtime ]);
             }
             else
