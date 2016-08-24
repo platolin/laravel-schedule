@@ -49,7 +49,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('Sybase:BI eis_cdrsalmnew ')->monthlyOn(2, '06:10');
         //
         $date1 = Carbon::now();
-        $yymm = $date1->subMonths(1)->format('Ym');
-        $schedule->command("Relmek:Monthly 'Mysql' 'dailyreport' '$yymm' ")->monthlyOn(1,'01:00');
+        $yymm_last = $date1->subMonths(1)->format('Ym');
+        $schedule->command("Relmek:Monthly 'Mysql' 'dailyreport' '$yymm_last' ")->monthlyOn(1,'01:00');
+        $schedule->command("Relmek:Monthly 'Mysql' 'armanph' '$yymm_last' ")->monthlyOn(1,'01:30');
     }
 }

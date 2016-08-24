@@ -6,3 +6,4 @@ composer.lock
 /.idea
 /storage/exports
 twsms.ini
+_ide_helper.php
