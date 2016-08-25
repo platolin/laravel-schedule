@@ -60,7 +60,7 @@ class RelmekMonthlyTest extends TestCase
     	DB::table('armanph')->insert( ['anpno' => 'W990101001',
     								   'depno' => '001',
     								   'mancode' => 'S000',
-    								   'anpdat' => '2016/5/1',
+    								   'anpdat' => '2016/6/1',
     								   'anpstat' =>	'Y',
     								   'recway' => '1' ]);
     	DB::table('armanpd')->insert( ['anpno' => 'W990101001',
