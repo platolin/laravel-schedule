@@ -66,11 +66,11 @@ class RelmekMonthly extends Command
     protected function armanph()
     {
         $this->yymm = $this->argument('yymm');
-        $start_date = Carbon::createFromDate(substr($this->yymm, 0,4),substr($this->yymm, 5,2) ,'01')->subMonths(2)->toDateString();
-        $end_date   = Carbon::createFromDate(substr($this->yymm, 0,4),substr($this->yymm, 5,2) ,'01')->subMonths(1)->toDateString();
-        $start_date2 = Carbon::createFromDate(substr($this->yymm, 0,4),substr($this->yymm, 5,2) ,'01')->subMonths(14)->toDateString();
-        $end_date2   = Carbon::createFromDate(substr($this->yymm, 0,4),substr($this->yymm, 5,2) ,'01')->subMonths(13)->toDateString();
-        //dd($start_date);
+        $start_date = Carbon::createFromDate(substr($this->yymm, 0,4),substr($this->yymm, 4,2) ,'01')->subMonths(2)->toDateString();
+        $end_date   = Carbon::createFromDate(substr($this->yymm, 0,4),substr($this->yymm, 4,2) ,'01')->subMonths(1)->toDateString();
+        $start_date2 = Carbon::createFromDate(substr($this->yymm, 0,4),substr($this->yymm, 4,2) ,'01')->subMonths(14)->toDateString();
+        $end_date2   = Carbon::createFromDate(substr($this->yymm, 0,4),substr($this->yymm, 4,2) ,'01')->subMonths(13)->toDateString();
+
         DB::beginTransaction();
         $sql_armanph = "insert into armanph_history select * from armanph where anpdat >= '$start_date' and anpdat < '$end_date' ";
         $sql_armanpd = "insert into armanpd_history select * from armanpd where anpno in (select anpno from armanph where anpdat >= '$start_date' and anpdat < '$end_date') ";
