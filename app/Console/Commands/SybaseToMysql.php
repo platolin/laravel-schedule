@@ -65,12 +65,37 @@ class SybaseToMysql extends Command
             case 'cdr_hosp':
                 $this->TransformTocdr_hosp();
                 break;
+            case 'invbomd':
+                $this->TransformToinvbomd();
+                break;                
             case 'test':
                 $this->TransformTest();
                 break;
         }
     }
+    public function TransformToinvbomd()
+    {
+        $invbomh = DB::connection('sybase')->select("select itnbrf from invbomh where indate >= ? ",[$this->today]);
+        $insert_count = 0 ;
+        foreach ($invbomh as $key => $data) {
+            $invbomd = DB::connection('sybase')->select("select * from invbomd where  itnbrf= ? ",[$data->itnbrf]);
+            DB::delete('delete from invbomd where itnbrf = ?' , [$data->itnbrf]);
+            foreach ($invbomd as $key => $value) {
+                $it =  new RecursiveIteratorIterator(new RecursiveArrayIterator($value));
+                $insert_value = iterator_to_array($it, false);            
+                $sql_insert  =  "insert into invbomd ( itnbrf,seqnr,itnbr,stdqty,unpris,unpris2)";
+                $sql_insert  .= " value ( ?,?,?,?,?,? )";
+                DB::insert($sql_insert, $insert_value);     
+                $insert_count ++;    
+            }            
+        }
+        if($insert_count > 0 )
+        {
+            Log::info('Sybase to Mysql insert invbomd ',['total insert :', $insert_count ]); 
+        }
 
+        $this->info('invbomd->ok');
+    }
     public function TransformTocdr_hosp()
     {        
         $cdr_hosp = DB::connection('sybase')->select("select hos_no,hospname,addr,mancode,areacode,indate,cuskind from cdr_hosp where indate >= ? ",[$this->today]);   

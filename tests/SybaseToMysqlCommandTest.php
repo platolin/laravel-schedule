@@ -44,5 +44,14 @@ class SybaseToMysqlCommandTest extends TestCase
         $this->assertContains('cdr_hosp',$resultAsText);
 
     }
+    public function testTransforminvbomd()
+    {
+        Artisan::call('Sybase:mysql', [
+            'table' => 'invbomd',            
+        ]);     
+        $resultAsText = Artisan::output();
+        $this->assertContains('invbomd',$resultAsText);
+
+    }
 
 }
