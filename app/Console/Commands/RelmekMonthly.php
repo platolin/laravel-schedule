@@ -8,6 +8,10 @@ use App\Dailyreporth;
 use Carbon\Carbon;
 use Log;
 use DB;
+use Mail;
+use \RecursiveIteratorIterator;
+use \RecursiveArrayIterator;
+
 class RelmekMonthly extends Command
 {
     /**
@@ -57,7 +61,74 @@ class RelmekMonthly extends Command
             case 'armanph':
                 $this->armanph();
                 break;
+            case 'events':
+                $this->events();
+                break;
         }       
+    }
+    /*
+    *   
+    *   
+    */  
+    protected function events()
+    {       
+        $insert_count = 0 ;
+        $settings = DB::table('events_monthly_settings')->where('yymm', $this->yymm)->get();
+        if( ! isset($start_date)){
+            //規則: 當日最大結束時間, 接著判斷其是否屬整天事件.
+            $str = "SELECT '$this->yymm',A.pdepno, A.userno, A.cmp_date, 
+                CASE WHEN A.allDay = 1 THEN '17:45:00' ELSE TIME(A.cmp_time) END AS end_time
+            FROM
+            (SELECT '$this->yymm',pdepno, userno, allDay, DATE(`end`) AS cmp_date, MAX(`end`) AS cmp_time
+                FROM `events`
+                WHERE `end` >= '".$this->start_26."' AND `end` <= '".$this->end_25."'
+                GROUP BY '$this->yymm',pdepno, userno, cmp_date
+                ORDER BY '$this->yymm',pdepno, userno, cmp_date) A";
+            $rs = DB::select(DB::raw($str));
+            //dd($rs);
+            $payin = NEW Payin;
+            foreach($rs as $key=>$value) {
+                /**
+                * 寫月結檔
+                */
+                $it =  new RecursiveIteratorIterator(new RecursiveArrayIterator($value));
+                $insert_value = iterator_to_array($it, false);
+                //dd($insert_value);
+                $insert_count ++;
+                $sql_insert = "INSERT INTO events_monthly( yymm, pdepno, userno, days, hours) VALUES( ?, ?, ?, ?, ?)"; 
+                DB::insert($sql_insert, $insert_value);    
+                /**
+                * 更新下班時間, 沒有卡鐘資料的需要Insert。
+                */ 
+                //dd($value);
+                if( $payin::where('trdate',$value->cmp_date )->where('userno',$value->userno)->exists() ) {
+                    $otrtime = substr($value->end_time, 0, 2).substr($value->end_time, 3, 2);                   
+                    $payin::where('userno', $value->userno)
+                        ->where('trdate', $value->cmp_date)
+                        ->update(['otrtime' => $otrtime ]);
+                } else {                    
+                    $otrtime = substr($value->end_time, 0, 2).substr($value->end_time, 3, 2);                    
+                    $payin_new = NEW Payin;
+                    $payin_new->userno = $value->userno;
+                    $payin_new->trdate = $value->cmp_date ;
+                    $payin_new->itrtime = $otrtime;
+                    $payin_new->otrtime = $otrtime;
+                    $payin_new->save();
+                } 
+            }
+            DB::table('events_monthly_settings')
+                ->where('id', 1)
+                ->update(['yymm' => $this->yymm ]);
+            Mail::raw('total raw '.$insert_count , function ($message)
+            {                       
+                $message->to('nicole@relmek.com.tw','nicole');
+                $message->to('olivia@relmek.com.tw','olivia');
+                $message->bcc('plato@relmek.com.tw','plato');
+                $message->subject("業務日報表月結完畢-{$this->yymm} 月");
+            });
+            Log::info('Relmek  Monthly event  total count :'.$insert_count ,['YYMM :', $this->yymm ]); 
+        }
+
     }
     /*
     *   move armanph , armanpd to armanph_history , armanpd_history over 2 month ago 
@@ -109,7 +180,7 @@ class RelmekMonthly extends Command
                 $payin_new->trdate = $value->enterdate ;
                 $payin_new->itrtime = $otrtime;
                 $payin_new->otrtime = $otrtime;
-                $payin_new->save();            
+                $payin_new->save();
             }
         } 
          if($insert_count > 0 )

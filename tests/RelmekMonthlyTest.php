@@ -25,38 +25,61 @@ class RelmekMonthlyTest extends TestCase
  //        ]);
  //        $this->assertTrue(true);
  //    }
- //    /**
-	// *
-	// *
- //    */
- //    public function testRelmekMonthlyOTCreportTocard()
- //    {
- //    	$start_date = (Carbon::now())->subMonths(2)->day(26)->toDateString();
- //    	$end_date = (Carbon::now())->subMonths(1)->day(25)->toDateString();
- //    	$yymm = (Carbon::now())->subMonths(1)->format('Ym');
+    /**
+	*  member events to payin
+	*
+    */
+    // public function testRelmekMonthlyEvents()
+    // {
+    //     $start_date = (Carbon::now())->subMonths(2)->day(26)->toDateString();
+    //     $end_date = (Carbon::now())->subMonths(1)->day(25)->toDateString();
+    //     $yymm = (Carbon::now())->subMonths(1)->format('Ym');
 
- //    	$dailyreporth = NEW Dailyreporth;
- //    	$dailyreporth->enterdate = $end_date;
- //    	$dailyreporth->mancode = 'S001';
- //    	$dailyreporth->ottime = '17:45';
- //    	$dailyreporth->save();
+    //     // $events = NEW events;
+    //     // $events->enterdate = $end_date;
+    //     // $events->mancode = 'S001';
+    //     // $events->ottime = '17:45';
+    //     // $events->save();
 
- //    	Artisan::call('Relmek:Monthly', [
- //            'Datatype' 	=> 'Mysql',
- //            'tablename' => 'dailyreport',
- //            'yymm'		=> $yymm,
- //        ]);
+    //     Artisan::call('Relmek:Monthly', [
+    //         'Datatype'  => 'Mysql',
+    //         'tablename' => 'events',
+    //         'yymm'      => $yymm,
+    //     ]);
 
-	// 	$payin = Payin::where('userno','S001')->where('trdate' , $end_date)->select('otrtime')->first();		
-	// 	$this->assertEquals($payin->otrtime , '1745');
- //    }
+    //     $payin = Payin::where('userno','S001')->where('trdate' , $end_date)->select('otrtime')->first();        
+    //     $this->assertEquals($payin->otrtime , '1745');
+    // }
+
+    public function testRelmekMonthlyOTCreportTocard()
+    {
+    	$start_date = (Carbon::now())->subMonths(2)->day(26)->toDateString();
+    	$end_date = (Carbon::now())->subMonths(1)->day(25)->toDateString();
+    	$yymm = (Carbon::now())->subMonths(1)->format('Ym');
+
+    	$dailyreporth = NEW Dailyreporth;
+    	$dailyreporth->enterdate = $end_date;
+    	$dailyreporth->mancode = 'S001';
+    	$dailyreporth->ottime = '17:45';
+    	$dailyreporth->save();
+
+    	Artisan::call('Relmek:Monthly', [
+            'Datatype' 	=> 'Mysql',
+            'tablename' => 'dailyreport',
+            'yymm'		=> $yymm,
+        ]);
+
+		$payin = Payin::where('userno','S001')->where('trdate' , $end_date)->select('otrtime')->first();		
+		$this->assertEquals($payin->otrtime , '1745');
+
+    }
 
     public function testRelmekArmanphMonthly()
     {
-    	/*
-    	*   move armanph , armanpd to armanph_history , armanpd_history over 2 month ago 
-    	*   delete armanph_history , armanpd_history over one year ago 
-    	*/	
+    	
+    	// *   move armanph , armanpd to armanph_history , armanpd_history over 2 month ago 
+    	// *   delete armanph_history , armanpd_history over one year ago 
+    		
     	DB::table('armanph')->insert( ['anpno' => 'W990101001',
     								   'depno' => '001',
     								   'mancode' => 'S000',

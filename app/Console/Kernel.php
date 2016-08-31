@@ -42,7 +42,6 @@ class Kernel extends ConsoleKernel
         $schedule->command('Sybase:mysql cdrcus_del')->dailyAt('23:00');
         $schedule->command('Sybase:mysql invbomd')->dailyAt('23:00');
         
-
         //monthly 
         $schedule->command('Sybase:excel emmi-dent')->monthlyOn(1, '07:00');
         $schedule->command('Sybase:excel cdrhmas')->monthlyOn(1, '07:05');
@@ -52,7 +51,8 @@ class Kernel extends ConsoleKernel
         //
         $date1 = Carbon::now();
         $yymm_last = $date1->subMonths(1)->format('Ym');
-        $schedule->command("Relmek:Monthly 'Mysql' 'dailyreport' '$yymm_last' ")->monthlyOn(1,'01:00');
+        $schedule->command("Relmek:Monthly 'Mysql' 'events' '$yymm_last' ")->monthlyOn(1,'03:00');
+        $schedule->command("Relmek:Monthly 'Mysql' 'dailyreport' '$yymm_last' ")->monthlyOn(1,'12:00');
         $schedule->command("Relmek:Monthly 'Mysql' 'armanph' '$yymm_last' ")->monthlyOn(1,'01:30');
     }
 }
