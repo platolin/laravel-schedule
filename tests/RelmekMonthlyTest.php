@@ -80,13 +80,13 @@ class RelmekMonthlyTest extends TestCase
     	// *   move armanph , armanpd to armanph_history , armanpd_history over 2 month ago 
     	// *   delete armanph_history , armanpd_history over one year ago 
     		
-    	DB::table('armanph')->insert( ['anpno' => 'W990101001',
+    	DB::table('armanph')->insert( ['anpno' => 'W990101002',
     								   'depno' => '001',
     								   'mancode' => 'S000',
     								   'anpdat' => '2016/6/1',
     								   'anpstat' =>	'Y',
     								   'recway' => '1' ]);
-    	DB::table('armanpd')->insert( ['anpno' => 'W990101001',
+    	DB::table('armanpd')->insert( ['anpno' => 'W990101002',
     								   'trseq' => 1,
     								   'trno' => 'ZZZZZZZZ',
     								   'cusno' => 'S000001',
@@ -97,10 +97,10 @@ class RelmekMonthlyTest extends TestCase
             'yymm'		=> '201608',
         ]);
 		$this->seeInDatabase('armanph_history', [
-        	'anpno' => 'W990101001'
+        	'anpno' => 'W990101002'
     	]);
     	$this->seeInDatabase('armanpd_history', [
-        	'anpno' => 'W990101001',
+        	'anpno' => 'W990101002',
         	'trseq' => 1,
     	]);
     }

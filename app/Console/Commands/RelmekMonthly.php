@@ -182,12 +182,14 @@ class RelmekMonthly extends Command
                 $payin_new->otrtime = $otrtime;
                 $payin_new->save();
             }
-        } 
-         if($insert_count > 0 )
-        {
-            Log::info('dailyreport Monthly to payin ok  ',['total trans :', $insert_count ]); 
-        }
-
+        }         
+        Mail::raw('total raw '.$insert_count , function ($message)
+        {                                   
+            $message->to('olivia@relmek.com.tw','olivia');
+            $message->bcc('plato@relmek.com.tw','plato');
+            $message->subject("OTC 業務日報表月結完畢-{$this->yymm} 月");
+        });
+        Log::info('Relmek  Monthly dailyreport total count :'.$insert_count ,['YYMM :', $this->yymm ]); 
         $this->info('dailyreport total :' .$insert_count );
     }
 }
